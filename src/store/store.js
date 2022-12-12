@@ -28,14 +28,14 @@ export default class Store {
             this.setAuth(true);//значит авторизованы
             this.setUser(response.data.user);//получили данные о пользователе
         } catch (err) {
-            alert(`Произошла ошибка регистрации ${err}`)
+            alert(`Произошла ошибка авторизации ${err}`)
         }
     }
 
     async registration(email, password) {
         try {
             const response = await AuthService.registration(email, password);
-            localStorage.setItem('token', response.dara.accessToken);
+            localStorage.setItem('token', response.data.accessToken);
             this.setAuth(true);
             this.setUser(response.data.user);
         } catch(err) {
@@ -53,12 +53,14 @@ export default class Store {
     }
     //проверяем свежесть нашего access токена
     async checkAuth() {
-        // try {
-        //     //отпралвяем запрос на свежий токен, пока что 
-        //     localStorage.setItem('token', )
-        // } catch(err) {
-
-        // }
+        try {
+            if(localStorage.getItem('token') !== null) {
+                console.log(localStorage.getItem('token'));
+                this.setAuth(true)
+            }
+        } catch (err) {
+            this.setAuth(false)
+        }
         return this.isAuth;
     }
 }

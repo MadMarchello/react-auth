@@ -21,7 +21,17 @@ const App = () => {
   return (
     <div className="App">
       ПЛАТФОРМА ОБРАЗОВАНИЕ
-        <LoginForm />
+        {
+          store.isAuth ? 
+            <div>
+              <p> Пользователь авторизован </p>
+              <p>{JSON.stringify(store.user)}</p>
+              <button onClick={() => store.logout()}>
+                Выйти
+              </button>
+            </div> : 
+            <LoginForm />
+        }
     </div>
   );
 }
