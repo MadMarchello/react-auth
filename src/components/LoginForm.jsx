@@ -14,6 +14,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 
 import { Context } from '../index';
+import useInput from '../utils/useInput';
 
 const Copyright = (props) => {
     return (
@@ -31,18 +32,12 @@ const Copyright = (props) => {
     )
 }
 const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    
+    const email = useInput('');
+    const password = useInput('');
+    //const [email, setEmail] = useState('');
+    //const [password, setPassword] = useState('');
     const {store} = useContext(Context);
-    //todo: подумать над неймингом 
-    const handlerEmail = (e) => {
-        e.preventDefault();
-        setEmail(e.target.value);
-    }
-    const handlerPassword = (e) => {
-        e.preventDefault();
-        setPassword(e.target.value);
-    }
     return (
         <Container maxWidth="xs">
             <CssBaseline />
@@ -63,17 +58,18 @@ const LoginForm = () => {
             </Box>
             <Box>
                 <TextField
+                    //todo сделать генератор ошибок
+                    helperText="Поле не может быть пустым"
                     margin="normal"
                     required
                     fullWidth
-                    id="email"
                     label="Почта"
                     name="email"
-                    autoComplete='email'
-                    value={email}
-                    onChange={handlerEmail}
+                    value={email.value}
+                    onChange={email.onChange}
+                    onBlur={email.onBlur}
                 />
-                <TextField 
+                <TextField  
                     margin="normal"
                     required
                     fullWidth
@@ -82,9 +78,9 @@ const LoginForm = () => {
                     type="password"
                     id="password"
                     autoComplete="current-password"
-                    value={password}
-                    onChange={handlerPassword}    
-                >
+                    value={password.value}
+                    onChange={password.onChange}
+                    onBlur={password.onBlur}                >
                 </TextField>
                 <Button
                     type="submit"
@@ -93,6 +89,7 @@ const LoginForm = () => {
                     sx={{ mt: 3, mb: 2 }}
                     onClick={() => {
                         store.login(email, password)
+                        //alert(email.value)
                     }}
                 >
                      Войти!
