@@ -14,7 +14,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 
 import { Context } from '../index';
-import useInput from '../utils/useInput';
 
 const Copyright = (props) => {
     return (
