@@ -1,4 +1,5 @@
-import React, { useState, useContext} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -17,8 +18,8 @@ import { Context } from '../index';
 
 const Copyright = (props) => {
     return (
-        <Typography 
-            variant="body2" 
+        <Typography
+            variant="body2"
             color="text.secondary"
             align="center"
             {...props}
@@ -30,17 +31,27 @@ const Copyright = (props) => {
         </Typography>
     )
 }
+
 const LoginForm = () => {
-    
-    const email = useInput('');
-    const password = useInput('');
-    //const [email, setEmail] = useState('');
-    //const [password, setPassword] = useState('');
-    const {store} = useContext(Context);
+    const { store } = useContext(Context);
+
+    const {
+        register,
+        formState: {
+            errors, isValid
+        },
+        handleSubmit,
+    } = useForm({
+        mode: "onBlur"
+    });
+
+    const onSubmit = (data) => {
+        store.login(data.email, data.password)
+    }
     return (
         <Container maxWidth="xs">
             <CssBaseline />
-            <Box  
+            <Box
                 sx={{
                     marginTop: 8,
                     display: 'flex',
@@ -48,27 +59,35 @@ const LoginForm = () => {
                     alignItems: 'center',
                 }}
             >
-                <Avatar sx={{m:1, bgcolor:'secondary.main'}}>
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     Авторизуйся!
                 </Typography>
             </Box>
-            <Box>
+            <Box onSubmit={handleSubmit(onSubmit)} component="form" sx={{ mt: 1 }}>
                 <TextField
-                    //todo сделать генератор ошибок
-                    helperText="Поле не может быть пустым"
                     margin="normal"
                     required
                     fullWidth
                     label="Почта"
                     name="email"
-                    value={email.value}
-                    onChange={email.onChange}
-                    onBlur={email.onBlur}
+                    
+                    {
+                        ...register("email", {
+                            required: "Поле обязательно к заполнению",
+                            pattern:  {
+                                value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                message: 'Введите корректный e-mail',
+                            }
+                        })
+                    }
+                    error={errors?.email ? true : false}
+                    helperText={errors?.email?.message}
                 />
-                <TextField  
+                <TextField
+                    
                     margin="normal"
                     required
                     fullWidth
@@ -77,26 +96,32 @@ const LoginForm = () => {
                     type="password"
                     id="password"
                     autoComplete="current-password"
-                    value={password.value}
-                    onChange={password.onChange}
-                    onBlur={password.onBlur}                >
+                    {
+                        ...register("password", {
+                            required: "Поле обязательно к заполнению",
+                            minLength: {
+                                value: 4, 
+                                message: "Минимальный размер пароля 4 символов"
+                            }
+                        })
+                    }
+                    error={errors?.password ? true : false}
+                    helperText={errors?.password?.message}
+
+                >
                 </TextField>
                 <Button
                     type="submit"
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
-                    onClick={() => {
-                        store.login(email, password)
-                        //alert(email.value)
-                    }}
+                    disabled={!isValid}
                 >
-                     Войти!
+                    Войти!
                 </Button>
             </Box>
             <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>
     )
 }
-
 export default LoginForm;
