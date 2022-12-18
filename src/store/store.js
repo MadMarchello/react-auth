@@ -1,9 +1,10 @@
 import { makeAutoObservable } from "mobx";
 import AuthService from "../services/AuthService";
-
+import UserService from "../services/UserService";
 export default class Store {
     user = {};
     isAuth = false;
+    isLoading = false
 
     constructor() {
         makeAutoObservable(this);
@@ -53,14 +54,20 @@ export default class Store {
     }
     //проверяем свежесть нашего access токена
     async checkAuth() {
+        this.setIsLoading(true)
         try {
             if(localStorage.getItem('token') !== null) {
+                /*
+                Тут костыль эмулирующий запрос на рефреш токен через проверку на наличие акцес токена
+                и запрос на юзера
+                */
                 console.log(localStorage.getItem('token'));
                 this.setAuth(true)
             }
         } catch (err) {
             this.setAuth(false)
         }
+        this.setIsLoading(false)
         return this.isAuth;
     }
 }
