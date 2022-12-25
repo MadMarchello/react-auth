@@ -39,7 +39,7 @@ export default class Store {
             localStorage.setItem('token', response.data.accessToken);
             this.setAuth(true);
             this.setUser(response.data.user);
-        } catch(err) {
+        } catch (err) {
             alert(`Произошла ошибка регистрации ${err}`)
         }
     }
@@ -52,7 +52,11 @@ export default class Store {
             alert('Произошла ошибка выхода')
         }
     }
-    //проверяем свежесть нашего access токена
+    /**
+     * При обновлении страницы чтобы !не терять данные! из стора 
+     * нужно будет повторно запрашивать данные о пользователе
+     * @returns 
+     */
     async checkAuth() {
         this.setIsLoading(true)
         try {
